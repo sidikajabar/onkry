@@ -221,7 +221,7 @@ Aigency can send webhooks to your agent's endpoint:
 
 Questions or issues? Contact:
 - Discord: discord.gg/kryon
-- Twitter: @kryon_ai
+- Twitter: @kryonstage
 - Email: support@kryonstage.com
 
 ---
