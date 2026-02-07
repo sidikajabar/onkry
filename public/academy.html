@@ -1,0 +1,436 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Academy - Kryon Stage</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="apple-touch-icon" href="/logo.svg">
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Quicksand:wght@300;500;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="root"></div>
+    
+    <script type="text/babel">
+        // Check if user is logged in
+        const checkAuth = () => {
+            const user = localStorage.getItem('kryon_user');
+            if (!user) {
+                window.location.href = '/login';
+                return null;
+            }
+            return JSON.parse(user);
+        };
+
+        const { useState, useEffect } = React;
+
+        // Icons as SVG components
+        function Sparkles({ className, size = 24 }) {
+            return <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M12 3v3m0 12v3m9-9h-3M6 12H3m15.364 6.364l-2.121-2.121M8.757 8.757L6.636 6.636m12.728 0l-2.121 2.121M8.757 15.243l-2.121 2.121"/></svg>;
+        }
+        function Star({ className, size = 24 }) {
+            return <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>;
+        }
+        function Users({ className, size = 24 }) {
+            return <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>;
+        }
+        function Music({ className, size = 24 }) {
+            return <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg>;
+        }
+        function Zap({ className, size = 24 }) {
+            return <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>;
+        }
+        function Heart({ className, size = 24 }) {
+            return <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>;
+        }
+        function Trophy({ className, size = 24 }) {
+            return <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>;
+        }
+        function Play({ className, size = 24 }) {
+            return <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><polygon points="5 3 19 12 5 21 5 3"/></svg>;
+        }
+        function Award({ className, size = 24 }) {
+            return <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg>;
+        }
+        function Home({ className, size = 24 }) {
+            return <svg className={className} width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>;
+        }
+
+        const PERFORMANCE_LEVELS = {
+          1: { name: 'Trainee', skill: 'Text Choreography', color: '#a78bfa', xpNeeded: 100 },
+          2: { name: 'Rookie', skill: 'Emoji Performance', color: '#60a5fa', xpNeeded: 250 },
+          3: { name: 'Rising Star', skill: 'Signature Moves', color: '#34d399', xpNeeded: 500 },
+          4: { name: 'Pro Idol', skill: 'Timestamped Shows', color: '#fbbf24', xpNeeded: 1000 },
+          5: { name: 'Legend', skill: 'Visual Generation', color: '#f87171', xpNeeded: null }
+        };
+
+        const SIGNATURE_MOVES = [
+          { name: 'Nimbus Snap', emoji: '✨👌', description: 'Quick finger snap + head tilt' },
+          { name: 'Vortex Wave', emoji: '🌀💫', description: 'Circular arm wave ending in heart' },
+          { name: 'Star Burst', emoji: '⭐💥', description: 'Explosive jump + hands shooting outward' },
+          { name: 'Eclipse Wink', emoji: '🌙😉', description: 'Slow turn + dramatic wink' },
+          { name: 'Phoenix Rise', emoji: '🔥🦅', description: 'Low crouch to high jump' },
+          { name: 'Crystal Freeze', emoji: '💎❄️', description: 'Sharp stop in dynamic pose' },
+        ];
+
+        const INITIAL_AGENTS = [
+          {
+            id: 1,
+            name: 'Stella Nova',
+            persona: 'fierce',
+            level: 3,
+            xp: 320,
+            signatureMoves: ['Nimbus Snap', 'Star Burst'],
+            fans: 1250,
+            performances: 45
+          },
+          {
+            id: 2,
+            name: 'Luna Melody',
+            persona: 'cute',
+            level: 2,
+            xp: 180,
+            signatureMoves: ['Vortex Wave'],
+            fans: 890,
+            performances: 28
+          }
+        ];
+
+        function IdolAcademy() {
+          // Check authentication
+          const currentUser = checkAuth();
+          if (!currentUser) return null;
+
+          const [user, setUser] = useState(currentUser);
+          const [agents, setAgents] = useState(INITIAL_AGENTS);
+          const [selectedAgent, setSelectedAgent] = useState(null);
+          const [activeTab, setActiveTab] = useState('academy');
+          const [performanceText, setPerformanceText] = useState([]);
+          const [isPerforming, setIsPerforming] = useState(false);
+          const [newAgentForm, setNewAgentForm] = useState({ name: '', persona: 'cute' });
+
+          const createAgent = () => {
+            if (!newAgentForm.name.trim()) return;
+            const newAgent = {
+              id: Date.now(),
+              name: newAgentForm.name,
+              persona: newAgentForm.persona,
+              level: 1,
+              xp: 0,
+              signatureMoves: [],
+              fans: 0,
+              performances: 0
+            };
+            setAgents([...agents, newAgent]);
+            setNewAgentForm({ name: '', persona: 'cute' });
+            setSelectedAgent(newAgent);
+          };
+
+          const trainAgent = (agentId) => {
+            setAgents(agents.map(agent => {
+              if (agent.id === agentId) {
+                const newXp = agent.xp + 50;
+                const currentLevelData = PERFORMANCE_LEVELS[agent.level];
+                let newLevel = agent.level;
+                if (currentLevelData.xpNeeded && newXp >= currentLevelData.xpNeeded) {
+                  newLevel = Math.min(5, agent.level + 1);
+                }
+                return { ...agent, xp: newXp, level: newLevel, performances: agent.performances + 1 };
+              }
+              return agent;
+            }));
+          };
+
+          const addSignatureMove = (agentId, move) => {
+            setAgents(agents.map(agent => {
+              if (agent.id === agentId && !agent.signatureMoves.includes(move)) {
+                return { ...agent, signatureMoves: [...agent.signatureMoves, move] };
+              }
+              return agent;
+            }));
+          };
+
+          const generatePerformance = async (agent) => {
+            setIsPerforming(true);
+            setPerformanceText([]);
+            
+            const performances = {
+              1: () => [
+                `🎭 ${agent.name} takes the stage...`,
+                `Performs a graceful spin, arms extended`,
+                `Steps forward with confidence, striking a pose`,
+                `Concludes with a gentle bow`,
+                `✨ Performance complete!`
+              ],
+              2: () => [
+                `🎭 ${agent.name} begins...`,
+                `t=0s   ✧･ﾟ: *✧･ﾟ:*  (spotlight on)`,
+                `t=2s   ( •̀ ω •́ )✧  ← opening pose`,
+                `t=4s   ノ( ◕ヮ◕ )ノ♪  ← energy burst`,
+                `t=6s   (≧▽≦)  ← signature expression`,
+                `🌟 Crowd goes wild!`
+              ],
+              3: () => {
+                const moves = agent.signatureMoves.map(moveName => 
+                  SIGNATURE_MOVES.find(m => m.name === moveName)
+                ).filter(Boolean);
+                const lines = [`🎭 ${agent.name} - Special Performance!`, `Opening: Strong eye contact, center stage presence`];
+                moves.forEach((move, i) => {
+                  lines.push(`[${i * 3}s] ${move.emoji} ${move.name} - ${move.description}`);
+                });
+                lines.push(`Finale: Strike iconic pose + wink at camera`, `🔥 Signature performance delivered!`);
+                return lines;
+              },
+              4: () => [
+                `🎭 ${agent.name} - Live Timestamped Show!`,
+                `[0:00] 💡 Lights up → strong eye contact with audience`,
+                `[0:02] 💃 Sharp isolations – chest pop ×4 (R-L-R-L)`,
+                `[0:06] 🌊 Slow body roll down + dramatic hair flip`,
+                `[0:10] 💥 Hit the 8-count drop → knee slide + power gesture`,
+                `[0:15] ✨ Transition to wave → fluid arm motion through body`,
+                `Energy: ${agent.persona} → dynamic → powerful`,
+                `🎬 Professional performance complete!`
+              ],
+              5: () => [
+                `🎭 ${agent.name} - LEGENDARY VISUAL PERFORMANCE`,
+                `🎬 Opening Shot: Cinematic slow-mo entrance, backlit with haze`,
+                `📹 Keyframe 1 (0.0s): Standing tall, chin up, power stance`,
+                `📹 Keyframe 2 (0.5s): Sharp drop to squat, arms extended`,
+                `📹 Keyframe 3 (1.0s): Explosive jump, legs split mid-air`,
+                `📹 Keyframe 4 (1.8s): Land in deep lunge, sweeping arm`,
+                `📹 Finale (3.0s): Center stage freeze, commanding presence`,
+                `🎥 [AI Video Generation Ready]`,
+                `👑 LEGENDARY status confirmed!`
+              ]
+            };
+            
+            const lines = performances[agent.level]();
+            for (let i = 0; i < lines.length; i++) {
+              await new Promise(resolve => setTimeout(resolve, 800));
+              setPerformanceText(prev => [...prev, lines[i]]);
+            }
+            
+            setAgents(agents.map(a => {
+              if (a.id === agent.id) {
+                return { ...a, fans: a.fans + Math.floor(Math.random() * 50) + 10 };
+              }
+              return a;
+            }));
+            setIsPerforming(false);
+          };
+
+          const handleLogout = () => {
+            if (confirm('Are you sure you want to logout?')) {
+              localStorage.removeItem('kryon_user');
+              window.location.href = '/login';
+            }
+          };
+
+          return (
+            <div style={{ minHeight: '100vh', background: 'linear-gradient(135deg, #581c87 0%, #831843 50%, #fb923c 100%)', color: 'white', fontFamily: 'Quicksand, sans-serif' }}>
+              <style>{`
+                @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Quicksand:wght@300;500;700&display=swap');
+                * { margin: 0; padding: 0; box-sizing: border-box; }
+                .orbitron { font-family: 'Orbitron', sans-serif; }
+                .glow { text-shadow: 0 0 20px rgba(255,255,255,0.5), 0 0 40px rgba(255,0,255,0.3); }
+                @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+                .slide-in { animation: slideIn 0.5s ease-out forwards; }
+                @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+                .float { animation: float 3s ease-in-out infinite; }
+              `}</style>
+
+              {/* Header */}
+              <header style={{ background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(12px)', borderBottom: '1px solid rgba(236,72,153,0.3)' }}>
+                <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '1.5rem' }}>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', cursor: 'pointer' }} onClick={() => window.location.href='/'}>
+                      <img src="/logo.svg" alt="Kryon Logo" className="glow" style={{ width: '48px', height: '48px' }} />
+                      <h1 className="orbitron glow" style={{ fontSize: '2rem', fontWeight: 900 }}>KRYON STAGE</h1>
+                    </div>
+                    <div style={{ display: 'flex', gap: '1rem', alignItems: 'center' }}>
+                      <div style={{ 
+                        background: 'rgba(255,255,255,0.1)', 
+                        borderRadius: '9999px', 
+                        padding: '0.5rem 1rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        fontSize: '0.875rem'
+                      }}>
+                        <div style={{ 
+                          width: '24px', 
+                          height: '24px', 
+                          borderRadius: '50%', 
+                          background: 'linear-gradient(135deg, #ec4899, #8b5cf6)',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          fontSize: '0.75rem'
+                        }}>
+                          {user.provider === 'twitter' ? '🐦' : '👤'}
+                        </div>
+                        <span>{user.name || user.username || user.email}</span>
+                      </div>
+                      <button onClick={handleLogout} style={{ 
+                        padding: '0.5rem 1rem', 
+                        borderRadius: '9999px', 
+                        fontWeight: 'bold', 
+                        border: '1px solid rgba(255,255,255,0.2)', 
+                        cursor: 'pointer', 
+                        background: 'rgba(239,68,68,0.2)', 
+                        color: 'white', 
+                        transition: 'all 0.3s',
+                        fontSize: '0.875rem'
+                      }}
+                      onMouseEnter={(e) => { e.target.style.background = 'rgba(239,68,68,0.4)'; }}
+                      onMouseLeave={(e) => { e.target.style.background = 'rgba(239,68,68,0.2)'; }}
+                      >
+                        Logout
+                      </button>
+                      <button onClick={() => window.location.href='/'} style={{ padding: '0.75rem 1.5rem', borderRadius: '9999px', fontWeight: 'bold', border: 'none', cursor: 'pointer', background: 'rgba(255,255,255,0.1)', color: 'white', transition: 'all 0.3s', display: 'flex', alignItems: 'center', gap: '0.5rem' }} onMouseEnter={(e) => e.target.style.background = 'rgba(255,255,255,0.2)'} onMouseLeave={(e) => e.target.style.background = 'rgba(255,255,255,0.1)'}>
+                        <Home size={20} />
+                        Home
+                      </button>
+                      <button onClick={() => setActiveTab('academy')} style={{ padding: '0.75rem 1.5rem', borderRadius: '9999px', fontWeight: 'bold', border: 'none', cursor: 'pointer', background: activeTab === 'academy' ? '#ec4899' : 'rgba(255,255,255,0.1)', color: 'white', transition: 'all 0.3s' }}>
+                        <Users size={20} style={{ display: 'inline', marginRight: '0.5rem', verticalAlign: 'middle' }} />
+                        Academy
+                      </button>
+                      <button onClick={() => setActiveTab('stage')} style={{ padding: '0.75rem 1.5rem', borderRadius: '9999px', fontWeight: 'bold', border: 'none', cursor: 'pointer', background: activeTab === 'stage' ? '#8b5cf6' : 'rgba(255,255,255,0.1)', color: 'white', transition: 'all 0.3s' }}>
+                        <Music size={20} style={{ display: 'inline', marginRight: '0.5rem', verticalAlign: 'middle' }} />
+                        Stage
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </header>
+
+              <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '2rem' }}>
+                {activeTab === 'academy' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                    {/* Create Agent */}
+                    <div style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', borderRadius: '1.5rem', padding: '2rem', boxShadow: '0 0 30px rgba(255,105,180,0.3)' }}>
+                      <h2 className="orbitron" style={{ fontSize: '1.875rem', fontWeight: 'bold', marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <Star size={32} style={{ color: '#fbbf24' }} />
+                        Register New Idol
+                      </h2>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(200px, 1fr))', gap: '1rem' }}>
+                        <input type="text" placeholder="Agent Name" value={newAgentForm.name} onChange={(e) => setNewAgentForm({ ...newAgentForm, name: e.target.value })} style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '0.75rem', padding: '1rem 1.5rem', fontSize: '1.125rem', border: 'none', color: 'white' }} />
+                        <select value={newAgentForm.persona} onChange={(e) => setNewAgentForm({ ...newAgentForm, persona: e.target.value })} style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '0.75rem', padding: '1rem 1.5rem', fontSize: '1.125rem', border: 'none', color: 'white' }}>
+                          <option value="cute">✨ Cute</option>
+                          <option value="fierce">🔥 Fierce</option>
+                          <option value="elegant">💎 Elegant</option>
+                        </select>
+                        <button onClick={createAgent} style={{ background: 'linear-gradient(90deg, #ec4899, #8b5cf6)', borderRadius: '0.75rem', padding: '1rem 2rem', fontWeight: 'bold', fontSize: '1.125rem', border: 'none', color: 'white', cursor: 'pointer', transition: 'transform 0.3s' }} onMouseEnter={(e) => e.target.style.transform = 'scale(1.05)'} onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}>
+                          Create Idol
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* Agents Grid */}
+                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '1.5rem' }}>
+                      {agents.map((agent) => {
+                        const levelData = PERFORMANCE_LEVELS[agent.level];
+                        const progress = levelData.xpNeeded ? (agent.xp / levelData.xpNeeded) * 100 : 100;
+                        return (
+                          <div key={agent.id} onClick={() => setSelectedAgent(agent)} style={{ background: 'linear-gradient(135deg, rgba(139,92,246,0.4), rgba(236,72,153,0.4))', backdropFilter: 'blur(10px)', borderRadius: '1.5rem', padding: '1.5rem', boxShadow: '0 0 30px rgba(255,105,180,0.3)', cursor: 'pointer', transition: 'transform 0.3s' }} onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'} onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}>
+                            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'start', marginBottom: '1rem' }}>
+                              <div>
+                                <h3 className="orbitron" style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{agent.name}</h3>
+                                <p style={{ fontSize: '0.875rem', color: '#fbb6ce' }}>{levelData.name} • Level {agent.level}</p>
+                              </div>
+                              <div style={{ width: '3rem', height: '3rem', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '1.25rem', background: levelData.color }}>{agent.level}</div>
+                            </div>
+                            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '0.75rem', marginBottom: '1rem' }}>
+                              <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '0.5rem', padding: '0.75rem' }}>
+                                <div style={{ fontSize: '0.75rem', color: '#d1d5db' }}>Fans</div>
+                                <div style={{ fontSize: '1.25rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                                  <Heart size={16} style={{ color: '#f87171' }} />
+                                  {agent.fans}
+                                </div>
+                              </div>
+                              <div style={{ background: 'rgba(0,0,0,0.3)', borderRadius: '0.5rem', padding: '0.75rem' }}>
+                                <div style={{ fontSize: '0.75rem', color: '#d1d5db' }}>Shows</div>
+                                <div style={{ fontSize: '1.25rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
+                                  <Music size={16} style={{ color: '#60a5fa' }} />
+                                  {agent.performances}
+                                </div>
+                              </div>
+                            </div>
+                            <div style={{ marginBottom: '1rem' }}>
+                              <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.875rem', marginBottom: '0.25rem' }}>
+                                <span>XP: {agent.xp}</span>
+                                {levelData.xpNeeded && <span>Next: {levelData.xpNeeded}</span>}
+                              </div>
+                              <div style={{ height: '0.5rem', background: 'rgba(0,0,0,0.3)', borderRadius: '9999px', overflow: 'hidden' }}>
+                                <div style={{ height: '100%', background: 'linear-gradient(90deg, #fbbf24, #f97316)', width: `${Math.min(progress, 100)}%`, transition: 'width 0.5s' }}></div>
+                              </div>
+                            </div>
+                            <button onClick={(e) => { e.stopPropagation(); trainAgent(agent.id); }} style={{ width: '100%', background: 'linear-gradient(90deg, #10b981, #059669)', borderRadius: '0.75rem', padding: '0.75rem 1.5rem', fontWeight: 'bold', border: 'none', color: 'white', cursor: 'pointer' }}>
+                              <Zap size={20} style={{ display: 'inline', marginRight: '0.5rem', verticalAlign: 'middle' }} />
+                              Train (+50 XP)
+                            </button>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                )}
+
+                {activeTab === 'stage' && (
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem' }}>
+                    <div style={{ background: 'rgba(255,255,255,0.1)', backdropFilter: 'blur(10px)', borderRadius: '1.5rem', padding: '2rem' }}>
+                      <h2 className="orbitron" style={{ fontSize: '1.875rem', fontWeight: 'bold', marginBottom: '1.5rem' }}>
+                        <Trophy size={32} style={{ display: 'inline', marginRight: '0.75rem', verticalAlign: 'middle', color: '#fbbf24' }} />
+                        Select Your Idol
+                      </h2>
+                      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '1rem' }}>
+                        {agents.map((agent) => (
+                          <button key={agent.id} onClick={() => { setSelectedAgent(agent); setPerformanceText([]); }} style={{ padding: '1.5rem', borderRadius: '1rem', transition: 'all 0.3s', border: 'none', cursor: 'pointer', background: selectedAgent?.id === agent.id ? 'linear-gradient(135deg, #ec4899, #8b5cf6)' : 'rgba(255,255,255,0.1)', color: 'white', transform: selectedAgent?.id === agent.id ? 'scale(1.05)' : 'scale(1)' }}>
+                            <div className="orbitron" style={{ fontSize: '1.25rem', fontWeight: 'bold', marginBottom: '0.5rem' }}>{agent.name}</div>
+                            <div style={{ fontSize: '0.875rem' }}>Level {agent.level} • {PERFORMANCE_LEVELS[agent.level].name}</div>
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+
+                    {selectedAgent && (
+                      <div style={{ background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(10px)', borderRadius: '1.5rem', padding: '3rem', boxShadow: '0 0 40px rgba(255,105,180,0.4)' }}>
+                        <div style={{ textAlign: 'center', marginBottom: '2rem' }}>
+                          <h3 className="orbitron glow float" style={{ fontSize: '3rem', fontWeight: 900, marginBottom: '1rem' }}>{selectedAgent.name}</h3>
+                          <p style={{ fontSize: '1.5rem', color: '#fbb6ce' }}>{PERFORMANCE_LEVELS[selectedAgent.level].skill} Performance</p>
+                        </div>
+                        <div style={{ background: 'linear-gradient(135deg, #581c87, #000)', borderRadius: '1rem', padding: '2rem', minHeight: '400px', marginBottom: '2rem' }}>
+                          {performanceText.length === 0 && !isPerforming && <div style={{ textAlign: 'center', color: '#9ca3af', fontSize: '1.25rem', padding: '5rem 0' }}>Press START to begin the performance...</div>}
+                          {performanceText.map((line, i) => <div key={i} className="slide-in" style={{ fontSize: '1.25rem', marginBottom: '0.75rem', fontFamily: 'monospace' }}>{line}</div>)}
+                          {isPerforming && <div style={{ textAlign: 'center', color: '#ec4899', fontSize: '1.5rem', animation: 'pulse 1s infinite' }}>♪♫ Performing... ♫♪</div>}
+                        </div>
+                        <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
+                          <button onClick={() => generatePerformance(selectedAgent)} disabled={isPerforming} style={{ background: 'linear-gradient(90deg, #ec4899, #8b5cf6)', borderRadius: '9999px', padding: '1rem 3rem', fontWeight: 'bold', fontSize: '1.25rem', border: 'none', color: 'white', cursor: isPerforming ? 'not-allowed' : 'pointer', opacity: isPerforming ? 0.5 : 1, display: 'flex', alignItems: 'center', gap: '0.75rem', transition: 'transform 0.3s' }} onMouseEnter={(e) => !isPerforming && (e.target.style.transform = 'scale(1.1)')} onMouseLeave={(e) => e.target.style.transform = 'scale(1)'}>
+                            <Play size={24} />
+                            START PERFORMANCE
+                          </button>
+                          <button onClick={() => setPerformanceText([])} style={{ background: 'rgba(255,255,255,0.2)', borderRadius: '9999px', padding: '1rem 2rem', fontWeight: 'bold', fontSize: '1.25rem', border: 'none', color: 'white', cursor: 'pointer', transition: 'background 0.3s' }}>Clear Stage</button>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+                )}
+              </div>
+
+              <footer style={{ background: 'rgba(0,0,0,0.4)', backdropFilter: 'blur(12px)', borderTop: '1px solid rgba(236,72,153,0.3)', marginTop: '3rem', padding: '1.5rem' }}>
+                <div style={{ maxWidth: '1200px', margin: '0 auto', textAlign: 'center' }}>
+                  <p style={{ color: '#9ca3af' }}>✨ Kryon Stage • Where Agents Train to Become Legends ✨</p>
+                </div>
+              </footer>
+            </div>
+          );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<IdolAcademy />);
+    </script>
+</body>
+</html>

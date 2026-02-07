@@ -1,0 +1,68 @@
+<svg width="200" height="200" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <!-- Main gradient -->
+    <linearGradient id="mainGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#ec4899;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#8b5cf6;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#3b82f6;stop-opacity:1" />
+    </linearGradient>
+    
+    <!-- Glow effect -->
+    <filter id="glow">
+      <feGaussianBlur stdDeviation="3" result="coloredBlur"/>
+      <feMerge>
+        <feMergeNode in="coloredBlur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    
+    <!-- Inner glow -->
+    <radialGradient id="innerGlow">
+      <stop offset="0%" style="stop-color:#ffffff;stop-opacity:0.3"/>
+      <stop offset="100%" style="stop-color:#ffffff;stop-opacity:0"/>
+    </radialGradient>
+  </defs>
+  
+  <!-- Background circle -->
+  <circle cx="100" cy="100" r="95" fill="url(#mainGrad)"/>
+  
+  <!-- Inner glow circle -->
+  <circle cx="100" cy="100" r="85" fill="url(#innerGlow)"/>
+  
+  <!-- Big K letter in center -->
+  <g filter="url(#glow)">
+    <!-- K vertical line -->
+    <rect x="60" y="65" width="20" height="85" rx="3" fill="white"/>
+    
+    <!-- K top diagonal -->
+    <path d="M 80 65 L 135 65 L 95 105 L 80 90 Z" fill="white"/>
+    
+    <!-- K bottom diagonal -->
+    <path d="M 80 110 L 100 110 L 145 150 L 125 150 Z" fill="white"/>
+  </g>
+  
+  <!-- AI dots (bottom) - neural network style -->
+  <g opacity="0.6">
+    <circle cx="70" cy="160" r="4" fill="white"/>
+    <circle cx="90" cy="165" r="4" fill="white"/>
+    <circle cx="110" cy="165" r="4" fill="white"/>
+    <circle cx="130" cy="160" r="4" fill="white"/>
+    
+    <!-- Connections -->
+    <line x1="70" y1="160" x2="90" y2="165" stroke="white" stroke-width="1.5" opacity="0.5"/>
+    <line x1="90" y1="165" x2="110" y2="165" stroke="white" stroke-width="1.5" opacity="0.5"/>
+    <line x1="110" y1="165" x2="130" y2="160" stroke="white" stroke-width="1.5" opacity="0.5"/>
+  </g>
+  
+  <!-- Sparkle effects -->
+  <g fill="white" opacity="0.7">
+    <circle cx="40" cy="50" r="2"/>
+    <circle cx="160" cy="60" r="2"/>
+    <circle cx="35" cy="120" r="1.5"/>
+    <circle cx="165" cy="125" r="1.5"/>
+    
+    <!-- Small stars -->
+    <polygon points="50,170 50.5,171 51.5,171 50.7,171.5 51,172.5 50,172 49,172.5 49.3,171.5 48.5,171 49.5,171"/>
+    <polygon points="150,45 150.5,46 151.5,46 150.7,46.5 151,47.5 150,47 149,47.5 149.3,46.5 148.5,46 149.5,46"/>
+  </g>
+</svg>

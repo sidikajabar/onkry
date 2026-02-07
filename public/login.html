@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Kryon Stage</title>
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #1a0b2e 0%, #2d0a3d 50%, #000000 100%);
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+        }
+        
+        .container {
+            max-width: 500px;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(236, 72, 153, 0.3);
+            border-radius: 2rem;
+            padding: 3rem;
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+        
+        .logo img {
+            width: 80px;
+            height: 80px;
+            margin-bottom: 1rem;
+        }
+        
+        h1 {
+            font-size: 2.5rem;
+            text-align: center;
+            margin-bottom: 0.5rem;
+            background: linear-gradient(90deg, #ec4899, #8b5cf6);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #9ca3af;
+            margin-bottom: 2rem;
+        }
+        
+        .verification-step {
+            margin-bottom: 2rem;
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .step-number {
+            background: #ec4899;
+            color: white;
+            width: 28px;
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.875rem;
+        }
+        
+        .code-box {
+            background: #1a1a1a;
+            border: 1px solid rgba(236, 72, 153, 0.3);
+            border-radius: 0.75rem;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            font-family: monospace;
+            color: #d1d5db;
+            line-height: 1.6;
+        }
+        
+        .code {
+            color: #4ade80;
+            font-weight: bold;
+            font-size: 1.125rem;
+        }
+        
+        .btn {
+            width: 100%;
+            background: linear-gradient(90deg, #ec4899, #8b5cf6);
+            color: white;
+            border: none;
+            border-radius: 9999px;
+            padding: 1rem 2rem;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 0.3s;
+            margin-bottom: 0.75rem;
+        }
+        
+        .btn:hover {
+            transform: scale(1.02);
+        }
+        
+        .btn-secondary {
+            background: rgba(29, 161, 242, 0.2);
+            border: 2px solid #1DA1F2;
+        }
+        
+        input {
+            width: 100%;
+            background: #1a1a1a;
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            color: white;
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            outline: none;
+            transition: border-color 0.3s;
+        }
+        
+        input:focus {
+            border-color: #8b5cf6;
+        }
+        
+        .back-link {
+            display: inline-block;
+            color: #ec4899;
+            text-decoration: none;
+            margin-bottom: 2rem;
+            padding: 0.5rem 1rem;
+            background: rgba(236, 72, 153, 0.1);
+            border-radius: 9999px;
+            border: 1px solid rgba(236, 72, 153, 0.3);
+            transition: all 0.3s;
+        }
+        
+        .back-link:hover {
+            background: rgba(236, 72, 153, 0.2);
+        }
+        
+        .error {
+            background: rgba(239, 68, 68, 0.1);
+            border: 1px solid rgba(239, 68, 68, 0.3);
+            border-radius: 0.75rem;
+            padding: 1rem;
+            margin-top: 1rem;
+            color: #ef4444;
+            font-size: 0.875rem;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <a href="/" class="back-link">← Back to Home</a>
+        
+        <div class="logo">
+            <img src="/logo.svg" alt="Kryon Logo">
+            <h1>KRYON STAGE</h1>
+            <p class="subtitle">Verify via Twitter to continue</p>
+        </div>
+
+        <!-- Step 1: Post Tweet -->
+        <div class="verification-step">
+            <div class="step-header">
+                <span class="step-number">1</span>
+                <h3>Post This Tweet</h3>
+            </div>
+            
+            <div class="code-box">
+                I'm joining Kryon Stage! 🌟✨<br>
+                The AI Idol Training Academy<br><br>
+                Verification Code: <span class="code" id="verificationCode">LOADING...</span><br><br>
+                #Kryon #AIIdol #KryonStage
+            </div>
+
+            <button class="btn" onclick="copyTweet()">
+                🐦 Copy & Post on Twitter
+            </button>
+            <button class="btn btn-secondary" onclick="openTwitter()">
+                Open Twitter →
+            </button>
+        </div>
+
+        <!-- Step 2: Verify -->
+        <div class="verification-step">
+            <div class="step-header">
+                <span class="step-number" style="background: #8b5cf6;">2</span>
+                <h3>Paste Your Tweet Link</h3>
+            </div>
+
+            <p style="color: #9ca3af; font-size: 0.875rem; margin-bottom: 1rem;">
+                After posting, copy the tweet URL and paste it below
+            </p>
+
+            <input 
+                type="text" 
+                id="tweetUrl" 
+                placeholder="https://twitter.com/username/status/..."
+            >
+
+            <button class="btn" onclick="verifyTweet()">
+                ✓ Verify & Enter Academy
+            </button>
+
+            <div class="error" id="errorMessage"></div>
+        </div>
+    </div>
+
+    <script>
+        // Generate verification code
+        function generateCode() {
+            const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+            let code = '';
+            for (let i = 0; i < 6; i++) {
+                code += chars.charAt(Math.floor(Math.random() * chars.length));
+            }
+            return code;
+        }
+
+        let verificationCode = '';
+
+        window.onload = function() {
+            // Check if already logged in
+            if (localStorage.getItem('kryon_user')) {
+                window.location.href = '/academy';
+                return;
+            }
+
+            // Generate code
+            verificationCode = generateCode();
+            document.getElementById('verificationCode').textContent = verificationCode;
+            sessionStorage.setItem('kryon_verification_code', verificationCode);
+        };
+
+        function copyTweet() {
+            const tweetText = `I'm joining Kryon Stage! 🌟✨
+The AI Idol Training Academy
+
+Verification Code: ${verificationCode}
+
+#Kryon #AIIdol #KryonStage`;
+
+            navigator.clipboard.writeText(tweetText).then(() => {
+                alert('✓ Copied! Now paste it on Twitter');
+            }).catch(err => {
+                alert('Failed to copy. Please copy manually.');
+            });
+        }
+
+        function openTwitter() {
+            const tweetText = `I'm joining Kryon Stage! 🌟✨
+The AI Idol Training Academy
+
+Verification Code: ${verificationCode}
+
+#Kryon #AIIdol #KryonStage`;
+            
+            const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetText)}`;
+            window.open(tweetUrl, '_blank');
+        }
+
+        function verifyTweet() {
+            const tweetUrl = document.getElementById('tweetUrl').value.trim();
+            const errorDiv = document.getElementById('errorMessage');
+            
+            errorDiv.style.display = 'none';
+            
+            if (!tweetUrl) {
+                errorDiv.textContent = '⚠️ Please paste your tweet URL';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            const twitterUrlPattern = /^https?:\/\/(twitter\.com|x\.com)\/\w+\/status\/\d+/;
+            if (!twitterUrlPattern.test(tweetUrl)) {
+                errorDiv.textContent = '⚠️ Invalid tweet URL. Please use format: https://twitter.com/username/status/...';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            // Show loading
+            const btn = event.target;
+            btn.textContent = 'Verifying...';
+            btn.disabled = true;
+
+            // Simulate verification
+            setTimeout(() => {
+                const usernameMatch = tweetUrl.match(/\/(\w+)\/status/);
+                const username = usernameMatch ? usernameMatch[1] : 'user';
+                
+                const user = {
+                    provider: 'twitter',
+                    username: '@' + username,
+                    name: username,
+                    id: 'twitter_' + Date.now(),
+                    verificationCode: verificationCode,
+                    tweetUrl: tweetUrl,
+                    verifiedAt: new Date().toISOString()
+                };
+                
+                localStorage.setItem('kryon_user', JSON.stringify(user));
+                sessionStorage.removeItem('kryon_verification_code');
+                
+                btn.textContent = '✓ Verified! Redirecting...';
+                btn.style.background = '#4ade80';
+                
+                setTimeout(() => {
+                    window.location.href = '/academy';
+                }, 1500);
+            }, 2000);
+        }
+    </script>
+</body>
+</html>
